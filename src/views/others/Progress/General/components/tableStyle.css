@@ -1,0 +1,61 @@
+.react-dataTable {
+  border-radius: 0;
+}
+
+.react-dataTable .rdt_TableHead .rdt_TableHeadRow {
+  background-color: gray;
+  border-top: 1px solid;
+  border-color: black;
+  min-height: 0;
+  height: 38px;
+}
+
+.react-dataTable .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol {
+  padding: 0.72rem 1.5rem;
+}
+
+.react-dataTable .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol .rdt_TableCol_Sortable {
+  color: white;
+  font-weight: bold;
+  font-style: 0.857rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.react-dataTable .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol .rdt_TableCol_Sortable:hover {
+  opacity: 1;
+}
+
+.react-dataTable .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol .rdt_TableCol_Sortable span {
+  margin-left: 0.35rem;
+}
+
+.react-dataTable .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol:first-child .form-check {
+  transform: translateX(-10px);
+}
+
+.react-dataTable .rdt_TableBody .rdt_TableRow {
+  color: black;
+}
+
+.react-dataTable .rdt_TableBody .rdt_TableRow .rdt_TableCell {
+  height: 53px;
+  padding: 0.72rem 1.5rem;
+}
+
+.react-dataTable .react-paginate.separated-pagination .page-item:first-child .page-link,
+.react-dataTable .react-paginate.separated-pagination .page-item:last-child .page-link {
+  border-radius: 50%;
+}
+
+.react-dataTable.roles-table .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol:first-child .form-check {
+  transform: translateX(0);
+}
+
+.react-dataTable.roles-table .rdt_TableBody .rdt_TableRow .rdt_TableCell:first-child .form-check {
+  transform: translateX(10px);
+}
+
+.react-dataTable.react-dataTable-selectable-rows .rdt_TableHead .rdt_TableHeadRow .rdt_TableCol:not(:first-child) {
+  padding-left: 0.2rem;
+}

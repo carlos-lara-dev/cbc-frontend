@@ -1,0 +1,13 @@
+.active-btn {
+  background-color: #810000 !important;
+  border-color: #810000 !important;
+  color: #FFF !important;
+  font-weight: 600 !important;
+}
+
+.inactive-btn {
+  background-color: #DCDCDC !important;
+  border-color: #DCDCDC !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}

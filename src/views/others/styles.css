@@ -1,0 +1,14 @@
+.header-bg {
+    background-image: url("../../assets/img/Header1.png");
+}
+
+.precarga {
+    background-image: url("https://dummyimage.com/300x300/ffffff/000000.gif&text=Cargando...");
+    background-repeat: no-repeat;
+    /* background-size: contain; La imagen cubrirá todo el div */
+    background-position: center; /* Centrar la imagen horizontal y verticalmente */
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    /* height: 100vh; */
+}

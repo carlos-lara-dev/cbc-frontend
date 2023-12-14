@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "title": "Areas",
+    "route": "/settings/area"
+  },
+  {
+    "id": 2,
+    "title": "Agencias",
+    "route": "/settings/agency"
+  },
+  {
+    "id": 3,
+    "title": "Divisiones",
+    "route": "/settings/division"
+  },
+  {
+    "id": 4,
+    "title": "Módulos",
+    "route": "/settings/module"
+  },
+  {
+    "id": 5,
+    "title": "Cuestionarios",
+    "route": "/settings/question"
+  },
+  {
+    "id": 7,
+    "title": "Presentaciones",
+    "route": "/settings/presentation"
+  },
+  {
+    "id": 8,
+    "title": "Usuarios",
+    "route": "/settings/user"
+  },
+  {
+    "id": 9,
+    "title": "Roles",
+    "route": "/settings/role"
+  }
+]

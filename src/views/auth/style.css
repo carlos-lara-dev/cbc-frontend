@@ -1,0 +1,14 @@
+.profile-header {
+  min-height: 10rem !important;
+}
+
+.profile{
+  position: absolute;
+  height: 90px;
+  width: 90px;
+}
+
+.profile img{
+  height: 80px;
+  width: 80px;
+}

@@ -1,0 +1,19 @@
+.btn-view-presentation {
+    background-color: #E70202 !important;
+    color: #FFFFFF !important;
+    font-weight: bold !important;
+}
+
+.answer-correct {
+    background-color: #7cb426;
+    color: #FFFFFF;
+}
+
+.answer-incorrect {
+    background-color: #E70202;
+    color: #FFFFFF;
+}
+
+.option:hover {
+    color: #810000 !important;
+}
