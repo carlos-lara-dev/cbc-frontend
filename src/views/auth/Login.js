@@ -25,6 +25,17 @@ const Login = () => {
     const [dataAgency, setDataAgency] = useState([])
     const [agencySelected, setAgencySelected] = useState(null)
 
+    const cleanInputs = () => {
+        setUserName("")
+        setDpiValue("")
+        setUserValue("")
+        setPasswordValue("")
+        setPassword2Value("")
+        setDivisionSelected(null)
+        setAreaSelected(null)
+        setAgencySelected(null)
+    }
+
     const handleLogin = async () => {
         try {
             setIsLoading(true)
@@ -45,6 +56,11 @@ const Login = () => {
         } catch (error) {
             setIsLoading(false)
             console.log("[ ERROR LOGIN ] =>", error)
+            MySwal.fire({
+                title: "¡Atención!",
+                text: "No se pudo inciar sesión",
+                icon: "info"
+            });
         }
     }
 
@@ -87,6 +103,7 @@ const Login = () => {
                     idAgency: data.agencySelected
                 })
                 console.log("[ REGISTER ]", register.data);
+                cleanInputs()
                 if (!register.data?.error) {
                     setIsLoading(false)
                     MySwal.fire({
@@ -104,6 +121,7 @@ const Login = () => {
                 }
             }
         } catch (error) {
+            cleanInputs()
             console.log("[ REGISTER ERROR ]", error);
         }
     }
@@ -183,7 +201,7 @@ const Login = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-md-11 offset-md-1 position-relative">
-                            <img src={"https://res.cloudinary.com/dwjgahuls/image/upload/f_auto,q_auto/v1/CBC/uhp5idkrb3zf0w9n1h0h"} className="img-fluid" alt="Header" />
+                            <img src={"/assets/HEADER.png"} className="img-fluid" alt="Header" />
                             <div className="position-absolute end-0 translate-middle" style={{ top: "70%", transform: 'translate(-50%, -20%)' }}>
                                 <h1 className="fs-1">LÍDERES DEL MERCADO</h1>
                                 <h3 className="fs-3">LIDERANDO GRANDES MARCAS</h3>
@@ -232,12 +250,12 @@ const Login = () => {
                                                             onChange={({ target }) => setPassword(target.value)}
                                                         />
                                                     </div>
-                                                    <div className="form-check mt-2">
+                                                    {/* <div className="form-check mt-2">
                                                         <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
                                                         <label className="form-check-label">
                                                             Mantener conectado
                                                         </label>
-                                                    </div>
+                                                    </div> */}
                                                     <div className="text-center">
                                                         <button
                                                             type="button"

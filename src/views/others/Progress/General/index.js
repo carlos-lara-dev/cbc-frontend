@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Accordion from "../../../components/Accordion";
 import HeaderComponent from "../../../components/HeaderComponent";
 import MenuComponent from "../../../components/MenuComponent";
@@ -9,6 +10,7 @@ import "../styles.css";
 import { getGeneralDataByArea, getGeneralDataByDivision, getGeneralDataInscriptionService } from "../../../services/dashboardFnc";
 
 const ProgressGeneral = () => {
+  const navigate = useNavigate()
   const [active, setActive] = useState(0)
   const [data, setData] = useState(null)
   const [dataByDivision, setDataByDivision] = useState([])
@@ -75,7 +77,7 @@ const ProgressGeneral = () => {
       console.log("[ ERROR ] => ", error)
     }
   }
-console.log("DATA DIVISION CENTREO ===>", dataByArea);
+
   useEffect(() => {
     if (active === 1) {
       getDataByDivision()
@@ -85,6 +87,18 @@ console.log("DATA DIVISION CENTREO ===>", dataByArea);
       getData()
     }
   }, [active])
+
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
 
   const options = {
     chart: {

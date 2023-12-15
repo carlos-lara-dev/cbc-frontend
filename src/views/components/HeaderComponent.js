@@ -3,7 +3,7 @@ const HeaderComponent = () => (
         <div className="container">
             <div className="row">
                 <div className="col-md-12 position-relative d-flex d-none d-md-block d-xl-block">
-                    <img src={"https://res.cloudinary.com/dwjgahuls/image/upload/f_auto,q_auto/v1/CBC/uhp5idkrb3zf0w9n1h0h"} className="d-none d-md-block img-fluid" alt="Header" />
+                    <img src={"/assets/HEADER.png"} className="d-none d-md-block img-fluid" alt="Header" />
                     <div className="position-absolute end-0" style={{ top: "70%" }}>
                         <h1 style={{ fontSize: 50, fontWeight: "bold" }}>LÍDERES DEL MERCADO</h1>
                         <h3 style={{ fontSize: 36, fontWeight: "bold" }}>LIDERANDO GRANDES MARCAS</h3>
@@ -16,7 +16,7 @@ const HeaderComponent = () => (
                         <h4 className="fw-semibold">LIDERANDO GRANDES MARCAS</h4>
                     </div>
                     <img
-                        src={"https://res.cloudinary.com/dwjgahuls/image/upload/f_auto,q_auto/v1/CBC/v3x8oiwufecbtxrd5uc8"}
+                        src={"/assets/HEADER-MOBILE.png"}
                         className="d-sm-block d-md-none"
                         width={"100%"}
                         alt="Header"

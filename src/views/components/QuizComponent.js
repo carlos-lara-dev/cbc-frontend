@@ -72,7 +72,7 @@ const QuizComponent = ({
                     correctCount >= minimNote ? (
                         <>
                             <h2>Ganaste la prueba ¡Felicidades!</h2>
-                            <h3 className='m-1'><b>Pasaste con {(correctCount * 100) / questions.length} puntos</b></h3>
+                            <h3 className='m-1'><b>Pasaste con {correctCount} puntos</b></h3>
                             <p><b>Pasaste a Siguiente módulo</b></p>
                         </>
                     ) : (

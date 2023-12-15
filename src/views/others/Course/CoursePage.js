@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { useActionData, useParams } from "react-router-dom";
+import { useActionData, useNavigate, useParams } from "react-router-dom";
 
 import Presentation from "./Presentation";
 import Accordion from "../../components/Accordion";
@@ -26,6 +26,7 @@ import {
 const MySwal = withReactContent(Swal);
 
 const CoursePage = () => {
+    const navigate = useNavigate()
     const { id } = useParams();
     const [dataQuiz, setDataQuiz] = useState(null)
     const [dataPresentation, setDataPresentation] = useState([])
@@ -408,6 +409,18 @@ const CoursePage = () => {
             setTotalProgress(Math.round((currentQuestion + 1) * percentagePerQuestion));
         }
     }, [currentQuestion, questions.length, questionSelect]);
+
+    const loader = async () => {
+        const user = JSON.parse(localStorage.getItem("@user"))
+        if (!user) {
+            return navigate("/login");
+        }
+        return null;
+    };
+
+    useEffect(() => {
+        loader()
+    }, [])
 
     const RenderPresentation = ({ data }) => {
 

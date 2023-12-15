@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import HeaderComponent from "../../components/HeaderComponent"
 import MenuComponent from "../../components/MenuComponent"
@@ -5,6 +6,19 @@ import CATALOGS from "./catalogs.json"
 
 const Settings = () => {
   const navigate = useNavigate()
+
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    loader()
+  }, [])
+
   return(
     <div>
       <HeaderComponent />

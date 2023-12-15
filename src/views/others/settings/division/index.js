@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
+import { FiMoreVertical, FiPlus } from "react-icons/fi";
 import DataTable from 'react-data-table-component';
 import HeaderComponent from "../../../components/HeaderComponent"
 import MenuComponent from "../../../components/MenuComponent"
 import { getDivisionService } from "../../../services/userFnc"
-import { FiMoreVertical, FiPlus } from "react-icons/fi";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import "../tableStyle.css";
@@ -12,6 +13,7 @@ import { postDivisionSerivice, putDivisionSerivice } from "../../../services/set
 const MySwal = withReactContent(Swal);
 
 const DivisionCatalog = () => {
+  const navigate = useNavigate()
   const [dataDivision, setDataDivision] = useState([])
   const [divisionName, setDivisionName] = useState([])
   const [divisionSelected, setDivisionSelected] = useState(null)
@@ -39,21 +41,43 @@ const DivisionCatalog = () => {
     getData();
   }, [])
 
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
+
   const handleClickSave = async () => {
     try {
-      const request = await postDivisionSerivice({name: divisionName})
-      clearInputs();
-      if (!request?.error) {
+      if (divisionName !== "" && divisionName !== null) {
+        const request = await postDivisionSerivice({name: divisionName})
+        clearInputs();
         getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
-        })
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -64,22 +88,32 @@ const DivisionCatalog = () => {
 
   const handleClickUpdate = async () => {
     try {
-      const request = putDivisionSerivice(divisionSelected, {
-        name: divisionName
-      })
-
-      clearInputs();
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (divisionSelected !== "" && divisionName !== null) {
+        const request = putDivisionSerivice(divisionSelected, {
+          name: divisionName
         })
+
+        clearInputs();
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }

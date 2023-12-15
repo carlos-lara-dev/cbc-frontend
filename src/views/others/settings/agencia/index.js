@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import DataTable from 'react-data-table-component';
 import HeaderComponent from "../../../components/HeaderComponent"
 import MenuComponent from "../../../components/MenuComponent"
@@ -12,6 +13,7 @@ import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
 const AgencyCatalog = () => {
+  const navigate = useNavigate()
   const [dataAgency, setDataAgency] = useState([])
   const [dataArea, setDataArea] = useState([])
   const [agencyName, setAgencyName] = useState("")
@@ -53,6 +55,18 @@ const AgencyCatalog = () => {
     getDataArea();
   }, [])
 
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
+
   const clearInputs = () => {
     setAgencyName("")
     setAgencySelected(null)
@@ -61,22 +75,31 @@ const AgencyCatalog = () => {
 
   const handleClickSave = async () => {
     try {
-      const request = await postAgencyService({
-        name: agencyName,
-        idArea: areaSelected
-      })
-
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (agencyName !== "" && areaSelected !== null && areaSelected !== 0) {
+        const request = await postAgencyService({
+          name: agencyName,
+          idArea: areaSelected
         })
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -87,23 +110,32 @@ const AgencyCatalog = () => {
 
   const handleClickUpdate = async () => {
     try {
-      const request = putAgencyService(agencySelected, {
-        name: agencyName,
-        idArea: areaSelected
-      })
-
-      clearInputs();
-      getData();
-      if (!request?.error) {
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (agencyName !== "" && areaSelected !== 0 && areaSelected !== null) {
+        const request = putAgencyService(agencySelected, {
+          name: agencyName,
+          idArea: areaSelected
         })
+        clearInputs();
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue actualizado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo actualizar el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -137,12 +169,14 @@ const AgencyCatalog = () => {
           })
           getData();
           if (!request?.error) {
+            getData();
             return MySwal.fire({
               title: 'Excelente',
               text: 'Proceso completado',
               icon: 'success'
             })
           } else {
+            getData();
             return MySwal.fire({
               title: 'Atención',
               text: 'Algo salio mal',

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import { FiMoreVertical, FiPlus } from "react-icons/fi";
 import { getRolesServices, postRolesServices, putRolesServices } from "../../../services/settingsFnc";
 import DataTable from 'react-data-table-component';
@@ -10,6 +11,7 @@ import "../tableStyle.css";
 
 const MySwal = withReactContent(Swal);
 const RoleCatalog = () => {
+  const navigate = useNavigate()
   const [dataRole, setDataRole] = useState([])
   const [roleSelected, setRoleSelected] = useState(null)
   const [roleName, setRoleName] = useState("")
@@ -39,19 +41,28 @@ const RoleCatalog = () => {
 
   const handleClickSave = async () => {
     try {
-      const request = await postRolesServices({name: roleName})
-      clearInputs();
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
-        })
+      if (roleName !== "") {
+        const request = await postRolesServices({name: roleName})
+        clearInputs();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -63,19 +74,29 @@ const RoleCatalog = () => {
 
   const handleClickUpdate = async () => {
     try {
-      const request = putRolesServices(roleSelected, {name: roleName})
-      clearInputs();
-      if (!request?.error) {
+      if (roleSelected !== null && roleName !== "") {
+        const request = putRolesServices(roleSelected, {name: roleName})
+        clearInputs();
         getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
-        })
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData()
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -106,6 +127,7 @@ const RoleCatalog = () => {
           const request = putRolesServices(row.idRole, {
             state: row.state === "Activo" ? "Inactivo" : "Activo"
           })
+          getData();
           if (!request?.error) {
             getData();
             return MySwal.fire({
@@ -114,6 +136,7 @@ const RoleCatalog = () => {
               icon: 'success'
             })
           } else {
+            getData();
             return MySwal.fire({
               title: 'Atención',
               text: 'Algo salio mal',
@@ -126,6 +149,18 @@ const RoleCatalog = () => {
       console.log(error)
     }
   }
+
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
 
   const customStyles = {
     table: {

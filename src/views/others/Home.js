@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import CourseCard from "../components/courseCard";
 import HeaderComponent from "../components/HeaderComponent";
 import MenuComponent from "../components/MenuComponent";
@@ -8,6 +9,7 @@ import { cleanLocalModuleData, getRoles } from "../../utils";
 import "./styles.css"
 
 const Home = () => {
+    const navigate = useNavigate()
     const [modules, setModules] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
@@ -26,9 +28,18 @@ const Home = () => {
         getDataModules()
     }, [])
 
+    const loader = async () => {
+        const user = JSON.parse(localStorage.getItem("@user"))
+        if (!user) {
+            return navigate("/login");
+        }
+        return null;
+    };
+
     useEffect(() => {
-        cleanLocalModuleData()
+        loader()
     }, [])
+
     return (
         <main>
             <HeaderComponent />

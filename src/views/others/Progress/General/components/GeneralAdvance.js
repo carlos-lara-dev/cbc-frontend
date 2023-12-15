@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import HeaderComponent from '../../../../components/HeaderComponent';
 import MenuComponent from '../../../../components/MenuComponent';
@@ -7,6 +8,7 @@ import { getDataGeneralAdvances } from '../../../../services/dashboardFnc';
 import "./tableStyle.css";
 
 const GeneralAdvance = () => {
+  const navigate = useNavigate()
   const [data, setData] = useState([])
   const columns = [
     {
@@ -61,7 +63,7 @@ const GeneralAdvance = () => {
                           <div className='card-body'>
                             <div className='text-center'>
                               <h6><span className='fw-bold'>{quiz.Quiz.title}</span></h6>
-                              <h5>{(quiz?.UserScoreQuiz?.score * 10) || 80}</h5>
+                              <h5>{(quiz?.UserScoreQuiz?.score) || 80} pts</h5>
                             </div>
                           </div>
                         </div>
@@ -89,6 +91,17 @@ const GeneralAdvance = () => {
     getData()
   }, [])
 
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
 
   const customStyles = {
     table: {

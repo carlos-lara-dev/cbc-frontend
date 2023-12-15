@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
 
 import Login from "./views/auth/Login";
 import Profile from "./views/auth/Profile";
@@ -27,35 +27,37 @@ import './App.css';
 function App() {
   // Rutas públicas (que no requieren autenticación)
   const PublicRoutes = () => (
-    <>
+    <Fragment>
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
-    </>
+    </Fragment>
   );
 
   // Rutas privadas (requieren autenticación)
-  const PrivateRoutes = () => (
-    <>
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/course/:id" element={<CoursePage />} />
-      <Route path="/avances" element={<ProgressIndex />} />
-      <Route path="/avances/general" element={<ProgressGeneral />} />
-      <Route path="/avances/general/detail" element={<GeneralAdvance />} />
-      <Route path="/avances/centro" element={<ProgressCenter />} />
-      <Route path="/avances/centro/detail" element={<TableDetail />} />
-      <Route path="/settings" element={<Settings />} />
-      <Route path="/settings/area" element={<AreaCatalog />} />
-      <Route path="/settings/agency" element={<AgencyCatalog />} />
-      <Route path="/settings/division" element={<DivisionCatalog />} />
-      <Route path="/settings/module" element={<ModuleCatalog />} />
-      <Route path="/settings/question" element={<QuestionCatalog />} />
-      <Route path="/settings/presentation" element={<PresentationCatalog />} />
-      <Route path="/settings/user" element={<UserCatalog />} />
-      <Route path="/settings/role" element={<RoleCatalog />} />
-      <Route path="/settings/user/role" element={<UserRoleCatalog />} />
-    </>
-  );
+  const PrivateRoutes = () => {
+    return(
+      <Fragment>
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/course/:id" element={<CoursePage />} />
+        <Route path="/avances" element={<ProgressIndex />} />
+        <Route path="/avances/general" element={<ProgressGeneral />} />
+        <Route path="/avances/general/detail" element={<GeneralAdvance />} />
+        <Route path="/avances/centro" element={<ProgressCenter />} />
+        <Route path="/avances/centro/detail" element={<TableDetail />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/settings/area" element={<AreaCatalog />} />
+        <Route path="/settings/agency" element={<AgencyCatalog />} />
+        <Route path="/settings/division" element={<DivisionCatalog />} />
+        <Route path="/settings/module" element={<ModuleCatalog />} />
+        <Route path="/settings/question" element={<QuestionCatalog />} />
+        <Route path="/settings/presentation" element={<PresentationCatalog />} />
+        <Route path="/settings/user" element={<UserCatalog />} />
+        <Route path="/settings/role" element={<RoleCatalog />} />
+        <Route path="/settings/user/role" element={<UserRoleCatalog />} />
+      </Fragment>
+    )
+  }
 
   return (
     <main>

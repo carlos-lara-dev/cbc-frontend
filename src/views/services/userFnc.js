@@ -2,7 +2,7 @@ import axios from "axios"
 
 export const loginService = async (user, password) => {
   try {
-    const login = await axios.post("http://localhost:4500/settings/v1/user/login", { user, password })
+    const login = await axios.post("http://localhost:5000/settings/v1/user/login", { user, password })
     return login
   } catch (error) {
     console.log(error)
@@ -12,8 +12,18 @@ export const loginService = async (user, password) => {
 
 export const registerService = async (params) => {
   try {
-    const register = await axios.post("http://localhost:4500/settings/v1/user", params)
+    const register = await axios.post("http://localhost:5000/settings/v1/user", params)
     return register
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
+export const updateUserService = async (id, params) => {
+  try {
+    const update = await axios.put(`http://localhost:5000/settings/v1/user/${id}`, params)
+    return update
   } catch (error) {
     console.log(error)
     return null
@@ -22,7 +32,7 @@ export const registerService = async (params) => {
 
 export const getDivisionService = async () => {
   try {
-    const request = await axios.get("http://localhost:4500/settings/v1/division")
+    const request = await axios.get("http://localhost:5000/settings/v1/division")
     return request
   } catch (error) {
     return null
@@ -31,7 +41,7 @@ export const getDivisionService = async () => {
 
 export const getAreasByDivisionService = async (id) => {
   try {
-    const request = await axios.get(`http://localhost:4500/settings/v1/area/division/${id}`)
+    const request = await axios.get(`http://localhost:5000/settings/v1/area/division/${id}`)
     return request
   } catch (error) {
     return null
@@ -40,7 +50,7 @@ export const getAreasByDivisionService = async (id) => {
 
 export const getAreasService = async () => {
   try {
-    const request = await axios.get("http://localhost:4500/settings/v1/area")
+    const request = await axios.get("http://localhost:5000/settings/v1/area")
     return request
   } catch (error) {
     return null
@@ -49,7 +59,7 @@ export const getAreasService = async () => {
 
 export const getAgencyService = async (areaSelected) => {
   try {
-    const request = await axios.get(`http://localhost:4500/settings/v1/agency/area/${areaSelected}`)
+    const request = await axios.get(`http://localhost:5000/settings/v1/agency/area/${areaSelected}`)
     return request
   } catch (error) {
     return null
@@ -58,7 +68,7 @@ export const getAgencyService = async (areaSelected) => {
 
 export const getAgencyByAreaNameService = async (area) => {
   try {
-    const request = await axios.post(`http://localhost:4500/settings/v1/agency/area/name`, {area})
+    const request = await axios.post(`http://localhost:5000/settings/v1/agency/area/name`, {area})
     return request
   } catch (error) {
     return null
@@ -67,7 +77,7 @@ export const getAgencyByAreaNameService = async (area) => {
 
 export const getModulesService = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/quiz/v1/quiz");
+    const data = await axios.get("http://localhost:5000/quiz/v1/quiz");
     return data
   } catch (error) {
     return null
@@ -76,7 +86,7 @@ export const getModulesService = async () => {
 
 export const getAllUsersService = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/settings/v1/user");
+    const data = await axios.get("http://localhost:5000/settings/v1/user");
     return data
   } catch (error) {
     return null

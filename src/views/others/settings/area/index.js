@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import { getAreasService, getDivisionService } from "../../../services/userFnc"
 import { FiMoreVertical, FiPlus } from "react-icons/fi";
 import { postAreaService, putAreaService } from "../../../services/settingsFnc";
@@ -11,6 +12,7 @@ import "../tableStyle.css";
 
 const MySwal = withReactContent(Swal);
 const AreaCatalog = () => {
+  const navigate = useNavigate()
   const [dataArea, setDataArea] = useState([])
   const [areaName, setAreaName] = useState("")
   const [dataDivision, setDataDivision] = useState([])
@@ -55,23 +57,32 @@ const AreaCatalog = () => {
 
   const handleClickSave = async () => {
     try {
-      const request = await postAreaService({
-        name: areaName,
-        idDivision: divisionSelected
-      })
-
-      clearInputs();
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (areaName !== "" && divisionSelected !== 0 && divisionSelected !== null) {
+        const request = await postAreaService({
+          name: areaName,
+          idDivision: divisionSelected
         })
+        clearInputs();
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -83,23 +94,32 @@ const AreaCatalog = () => {
 
   const handleClickUpdate = async () => {
     try {
-      const request = putAreaService(areaSelected, {
-        name: areaName,
-        idDivision: divisionSelected
-      })
-
-      clearInputs();
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (areaName !== "" && divisionSelected !== 0 && divisionSelected !== null) {
+        const request = putAreaService(areaSelected, {
+          name: areaName,
+          idDivision: divisionSelected
         })
+        getData();
+        clearInputs();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -133,12 +153,14 @@ const AreaCatalog = () => {
           })
           getData();
           if (!request?.error) {
+            getData();
             return MySwal.fire({
               title: 'Excelente',
               text: 'Proceso completado',
               icon: 'success'
             })
           } else {
+            getData();
             return MySwal.fire({
               title: 'Atención',
               text: 'Algo salio mal',
@@ -151,6 +173,18 @@ const AreaCatalog = () => {
       console.log(error)
     }
   }
+
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
 
   const customStyles = {
     table: {

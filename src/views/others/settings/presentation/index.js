@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 import "../tableStyle.css";
+import { useNavigate } from "react-router-dom";
 
 const MySwal = withReactContent(Swal);
 const columns = [
@@ -29,6 +30,7 @@ const columns = [
 ]
 
 const PresentationCatalog = () => {
+  const navigate = useNavigate()
   const [dataPresentation, setDataPresentation] = useState([])
   const [dataQuiz, setDataQuiz] = useState([])
   const [quizSelected, setQuizSelected] = useState([])
@@ -71,23 +73,53 @@ const PresentationCatalog = () => {
     getModules();
   }, [])
 
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+    loader()
+  }, [])
+
+  const clearInputs = () => {
+    setQuizSelected(null)
+    setPresentationSelected(null)
+    setPosition("")
+    setFilePresentation(null)
+    setTypePresentation(null)
+  }
+
   const handleClickSave = async () => {
     try {
-      const request = await postPresentationService({
-        idQuiz: quizSelected
-      })
-
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (quizSelected !== null) {
+        const request = await postPresentationService({
+          idQuiz: quizSelected
         })
+        clearInputs()
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -98,25 +130,34 @@ const PresentationCatalog = () => {
 
   const handleClickSaveElement = async () => {
     try {
-      let fileName = quizSelected.replace(/\s+/g, '_')
-      const request = await postPresentationItemService({
-        idPresentation: presentationSelected,
-        position,
-        url: `/assets/${fileName}/${filePresentation.name}`,
-        idTypePresentation: typePresentation,
-      })
-
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (quizSelected !== null && presentationSelected !== null && filePresentation !== "" && typePresentation !== null) {
+        const request = await postPresentationItemService({
+          idPresentation: presentationSelected,
+          position,
+          url: filePresentation,
+          idTypePresentation: typePresentation,
         })
+        clearInputs()
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -324,10 +365,10 @@ const PresentationCatalog = () => {
                 <label className="form-label fw-semibold">Archivo</label>
                 <input
                     className="form-control form-control-md rounded-pill"
-                    type="file"
-                    placeholder="Selecciona un archivo"
+                    type="text"
+                    placeholder="Ruta de archivo"
                     aria-label=".form-control-sm example"
-                    onChange={({ target }) => setFilePresentation(target.files[0])}
+                    onChange={({ target }) => setFilePresentation(target.value)}
                 />
               </div>
               <div className="my-1">
@@ -387,10 +428,10 @@ const PresentationCatalog = () => {
                 <label className="form-label fw-semibold">Archivo</label>
                 <input
                     className="form-control form-control-md rounded-pill"
-                    type="file"
-                    placeholder="Selecciona un archivo"
+                    type="text"
+                    placeholder="Ruta de archivo"
                     aria-label=".form-control-sm example"
-                    onChange={({ target }) => setFilePresentation(target.files[0])}
+                    onChange={({ target }) => setFilePresentation(target.value)}
                 />
               </div>
               <div className="my-1">

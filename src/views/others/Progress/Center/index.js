@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Accordion from "../../../components/Accordion";
 import HeaderComponent from "../../../components/HeaderComponent";
 import MenuComponent from "../../../components/MenuComponent";
@@ -6,14 +7,22 @@ import ChartComponent from "./components/ChartComponent";
 import { getDataCenterDivisionAreaAgency, getGeneralDataByArea, getUsersByArea } from "../../../services/dashboardFnc";
 import Chart from 'react-apexcharts'
 import { getDivisionService } from "../../../services/userFnc";
+import { getSessionRoles } from "../../../../utils";
 
 const ProgressCenter = () => {
+  const navigate = useNavigate()
   const [active, setActive] = useState(0)
   const [divisionActive, setDivisionActive] = useState(null);
   const [dataArea, setDataArea] = useState([]);
   const [dataByArea, setDataByArea] = useState([]);
   const [divisionOptions, setDivisionOptions] = useState([]);
   const [dataDivision, setDataDivision] = useState([])
+  const [roles, setRoles] = useState([]);
+
+  const getRoles = async () => {
+    const data = getSessionRoles()
+    setRoles(data)
+  }
 
   const RenderContent = () => {
     return (
@@ -21,12 +30,14 @@ const ProgressCenter = () => {
         {
           dataArea.length > 0 && (
             dataArea.map((item, index) => (
-              <div key={`ACR-${index}`} className="m-3">
-                <Accordion
-                  title={item.name}
-                  content={<ChartComponent name={item.name} serie={[item.total_users]} />}
-                />
-              </div>
+              (item) && (
+                <div key={`ACR-${index}`} className="m-3">
+                  <Accordion
+                    title={item?.name || "-"}
+                    content={<ChartComponent name={item?.name || "-"} serie={[item.total_users]} />}
+                  />
+                </div>
+              )
             ))
           )
         }
@@ -39,7 +50,39 @@ const ProgressCenter = () => {
     if (response?.data) {
       if (response.data?.usersByArea) {
         console.log(response.data.usersByArea);
-        setDataArea(response.data.usersByArea)
+        let finalArray = []
+        if (response.data.usersByArea.length > 0) {
+          for (let rol of roles) {
+            if (rol === 1 || rol === 2 || rol === 3 || rol === 5) {
+              finalArray.push(...response.data.usersByArea)
+              break;
+            } else {
+              switch (rol) {
+                case 6:
+                  let dataCentro = response.data.usersByArea.find(item => item.name === "Centro - Centro");
+                  finalArray.push(dataCentro)
+                  break;
+                case 7:
+                  let dataNorte = response.data.usersByArea.find(item => item.name === "Centro - Norte");
+                  finalArray.push(dataNorte)
+                  break;
+                case 8:
+                  let dataSor = response.data.usersByArea.find(item => item.name === "Centro - Sor");
+                  finalArray.push(dataSor)
+                  break;
+                case 9:
+                  let dataOccidente = response.data.usersByArea.find(item => item.name === "Centro - Occidente");
+                  finalArray.push(dataOccidente)
+                  break;
+                case 10:
+                  let dataClave = response.data.usersByArea.find(item => item.name === "Centro Clave");
+                  finalArray.push(dataClave)
+                  break;
+              }
+            }
+          }
+        }
+        setDataArea(finalArray)
       }
     }
   }
@@ -59,22 +102,123 @@ const ProgressCenter = () => {
       let arrayTmp = [];
       if (data.length > 0) {
         data.forEach(division => {
-          division.areas.forEach(area => {
-            let resultsAgency = []
-            area.agencies.forEach(agency => {
-              resultsAgency.push({
-                x: `Aprobados ${agency.agency_name || ""}`,
-                y: agency.approved
-              }, {
-                x: `Reprobados ${agency.agency_name || ""}`,
-                y: agency.reproved
+          console.log("DIVSION SELECT ---> ", division);
+          for (let rol of roles) {
+            if (rol === 1 || rol === 2 || rol === 3 || rol === 5) {
+              division.areas.forEach(area => {
+                let resultsAgency = []
+                area.agencies.forEach(agency => {
+                  resultsAgency.push({
+                    x: `Aprobados ${agency.agency_name || ""}`,
+                    y: agency.approved
+                  }, {
+                    x: `Reprobados ${agency.agency_name || ""}`,
+                    y: agency.reproved
+                  })
+                })
+                arrayTmp.push({
+                  title: `División: ${division.division_name} - ${area.area_name} - Agencias`,
+                  data: resultsAgency
+                })
               })
-            })
-            arrayTmp.push({
-              title: `División: ${division.division_name} - ${area.area_name} - Agencias`,
-              data: resultsAgency
-            })
-          })
+              break;
+            } else {
+              let resultsAgency = []
+              switch (rol) {
+                case 6:
+                  let dataCentro = division.areas.find(area => area.area_name === "Centro - Centro")
+                  if (dataCentro) {
+                    dataCentro.agencies.forEach(agency => {
+                      resultsAgency.push({
+                        x: `Aprobados ${agency.agency_name || ""}`,
+                        y: agency.approved
+                      }, {
+                        x: `Reprobados ${agency.agency_name || ""}`,
+                        y: agency.reproved
+                      })
+                    })
+
+                    arrayTmp.push({
+                      title: `División: ${division.division_name} - ${dataCentro.area_name} - Agencias`,
+                      data: resultsAgency
+                    })
+                  }
+                  break;
+                case 7:
+                  let dataNorte = division.areas.find(area => area.area_name === "Centro - Norte")
+                  if (dataNorte) {
+                    dataNorte.agencies.forEach(agency => {
+                      resultsAgency.push({
+                        x: `Aprobados ${agency.agency_name || ""}`,
+                        y: agency.approved
+                      }, {
+                        x: `Reprobados ${agency.agency_name || ""}`,
+                        y: agency.reproved
+                      })
+                    })
+                    arrayTmp.push({
+                      title: `División: ${division.division_name} - ${dataNorte.area_name} - Agencias`,
+                      data: resultsAgency
+                    })
+                  }
+                  break;
+                case 8:
+                  let dataSor = division.areas.find(area => area.area_name === "Centro - Sor")
+                  if (dataSor) {
+                    dataSor.agencies.forEach(agency => {
+                      resultsAgency.push({
+                        x: `Aprobados ${agency.agency_name || ""}`,
+                        y: agency.approved
+                      }, {
+                        x: `Reprobados ${agency.agency_name || ""}`,
+                        y: agency.reproved
+                      })
+                    })
+                    arrayTmp.push({
+                      title: `División: ${division.division_name} - ${dataSor.area_name} - Agencias`,
+                      data: resultsAgency
+                    })
+                  }
+                  break;
+                case 9:
+                  let dataOccidente = division.areas.find(area => area.area_name === "Centro - Occidente")
+                  if (dataOccidente) {
+                    dataOccidente.agencies.forEach(agency => {
+                      resultsAgency.push({
+                        x: `Aprobados ${agency.agency_name || ""}`,
+                        y: agency.approved
+                      }, {
+                        x: `Reprobados ${agency.agency_name || ""}`,
+                        y: agency.reproved
+                      })
+                    })
+                    arrayTmp.push({
+                      title: `División: ${division.division_name} - ${dataOccidente.area_name} - Agencias`,
+                      data: resultsAgency
+                    })
+                  }
+                  break;
+                case 10:
+                  let dataClave = division.areas.find(area => area.area_name === "Centro Clave")
+                  if (dataClave) {
+                    dataClave.agencies.forEach(agency => {
+                      resultsAgency.push({
+                        x: `Aprobados ${agency.agency_name || ""}`,
+                        y: agency.approved
+                      }, {
+                        x: `Reprobados ${agency.agency_name || ""}`,
+                        y: agency.reproved
+                      })
+                    })
+                    arrayTmp.push({
+                      title: `División: ${division.division_name} - ${dataClave.area_name} - Agencias`,
+                      data: resultsAgency
+                    })
+                  }
+                  break;
+              }
+            }
+          }
         })
         setDataDivision(arrayTmp)
       }
@@ -86,20 +230,87 @@ const ProgressCenter = () => {
       const data = await getGeneralDataByArea()
       if (!data?.error) {
         if (data.data?.usersByDivisionAndArea) {
-          console.log("[ DATA AREAS ]", data.data.usersByDivisionAndArea)
           let arrayTmp = []
           data.data.usersByDivisionAndArea.forEach(item => {
             let results = []
             if (item.results.length > 0) {
-              item.results.forEach(area => {
-                results.push({
-                  x: `Aprobados ${area.area_name || ""}`,
-                  y: area.approved
-                }, {
-                  x: `Reprobados ${area.area_name || ""}`,
-                  y: area.reproved
-                })
-              })
+              for (let rol of roles) {
+                if (rol === 1 || rol === 2 || rol === 3 || rol === 5) {
+                  item.results.forEach(area => {
+                    results.push({
+                      x: `Aprobados ${area.area_name || ""}`,
+                      y: area.approved
+                    }, {
+                      x: `Reprobados ${area.area_name || ""}`,
+                      y: area.reproved
+                    })
+                  })
+                  break;
+                } else {
+                  switch (rol) {
+                    case 6:
+                      let dataCentro = item.results.find(area => area.area_name === "Centro - Centro");
+                      if (dataCentro) {
+                        results.push({
+                          x: `Aprobados ${dataCentro.area_name || ""}`,
+                          y: dataCentro.approved
+                        }, {
+                          x: `Reprobados ${dataCentro.area_name || ""}`,
+                          y: dataCentro.reproved
+                        })
+                      }
+                      break;
+                    case 7:
+                      let dataNorte = item.results.find(area => area.area_name === "Centro - Norte");
+                      if (dataNorte) {
+                        results.push({
+                          x: `Aprobados ${dataNorte.area_name || ""}`,
+                          y: dataNorte.approved
+                        }, {
+                          x: `Reprobados ${dataNorte.area_name || ""}`,
+                          y: dataNorte.reproved
+                        })
+                      }
+                      break;
+                    case 8:
+                      let dataSor = item.results.find(area => area.area_name === "Centro - Sor");
+                      if (dataSor) {
+                        results.push({
+                          x: `Aprobados ${dataSor.area_name || ""}`,
+                          y: dataSor.approved
+                        }, {
+                          x: `Reprobados ${dataSor.area_name || ""}`,
+                          y: dataSor.reproved
+                        })
+                      }
+                      break;
+                    case 9:
+                      let dataOccidente = item.results.find(area => area.area_name === "Centro - Occidente");
+                      if (dataOccidente) {
+                        results.push({
+                          x: `Aprobados ${dataOccidente.area_name || ""}`,
+                          y: dataOccidente.approved
+                        }, {
+                          x: `Reprobados ${dataOccidente.area_name || ""}`,
+                          y: dataOccidente.reproved
+                        })
+                      }
+                      break;
+                    case 10:
+                      let dataClave = item.results.find(area => area.area_name === "Centro Clave");
+                      if (dataClave) {
+                        results.push({
+                          x: `Aprobados ${dataClave.area_name || ""}`,
+                          y: dataClave.approved
+                        }, {
+                          x: `Reprobados ${dataClave.area_name || ""}`,
+                          y: dataClave.reproved
+                        })
+                      }
+                      break;
+                  }
+                }
+              }
             }
             arrayTmp.push({
               division: item.division_name,
@@ -115,9 +326,15 @@ const ProgressCenter = () => {
   }
 
   useEffect(() => {
-    getDataArea()
     getDataDivision()
+    getRoles()
   }, [])
+
+  useEffect(() => {
+    if (roles.length > 0) {
+      getDataArea()
+    }
+  }, [roles])
 
   useEffect(() => {
     if (active === 1) {
@@ -130,6 +347,18 @@ const ProgressCenter = () => {
       getDataByDivision(divisionActive)
     }
   }, [divisionActive])
+
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
 
   const options = {
     chart: {
@@ -168,9 +397,9 @@ const ProgressCenter = () => {
             active === 1 && (
               <div className="conatiner border my-2 p-2">
                 <div className="row">
-                  <div className="col-lg-12 col-md-12 col-sm-12 my-2">
+                  <div className="">
                     <h2>{"Reporte General: Área : Agencia"}</h2>
-                    <div className="d-flex justify-content-center">
+                    <div className="">
                       {
                         divisionOptions.length > 0 && (
                           divisionOptions.map((item, i) => (

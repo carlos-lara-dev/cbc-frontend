@@ -1,27 +1,53 @@
 import { useEffect, useState } from "react"
 import { FiMoreVertical, FiPlus } from "react-icons/fi";
-import { getRolesServices, postRolesServices, putRolesServices } from "../../../services/settingsFnc";
+import { getRoleUsersServices, getRolesServices, postRoleUsersServices, putRoleUsersServices } from "../../../services/settingsFnc";
 import DataTable from 'react-data-table-component';
 import HeaderComponent from "../../../components/HeaderComponent"
 import MenuComponent from "../../../components/MenuComponent"
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import "../tableStyle.css";
+import { getAllUsersService } from "../../../services/userFnc";
 
 const MySwal = withReactContent(Swal);
 const UserRoleCatalog = () => {
+  const [dataRoleUser, setDataRoleUser] = useState([])
+  const [dataUser, setDataUser] = useState([])
   const [dataRole, setDataRole] = useState([])
+  const [roleUserSelected, setRoleUserSelected] = useState(null)
   const [roleSelected, setRoleSelected] = useState(null)
-  const [roleName, setRoleName] = useState("")
+  const [userSelected, setUserSelected] = useState(null)
 
   const getData = async () => {
     try {
-      const data = await getRolesServices()
+      const data = await getRoleUsersServices()
       if (data?.data) {
         if (data.data.length > 0) {
-          let tmpArray = data.data.sort((a, b) => b.idRole - a.idRole)
-          setDataRole(tmpArray)
+          let tmpArray = data.data.sort((a, b) => b.idRoleUser - a.idRoleUser)
+          setDataRoleUser(tmpArray)
         }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getUserData = async () => {
+    try {
+      const data = await getAllUsersService()
+      if (data?.data) {
+        setDataUser(data.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getRoleData = async () => {
+    try {
+      const data = await getRolesServices()
+      if (data?.data) {
+        setDataRole(data.data)
       }
     } catch (error) {
       console.log(error)
@@ -30,16 +56,22 @@ const UserRoleCatalog = () => {
 
   useEffect(() => {
     getData();
+    getUserData();
+    getRoleData();
   }, [])
 
   const clearInputs = () => {
-    setRoleName("")
+    setUserSelected(null)
+    setUserSelected(null)
     setRoleSelected(null)
   }
 
   const handleClickSave = async () => {
     try {
-      const request = await postRolesServices({name: roleName})
+      const request = await postRoleUsersServices({
+        idRole: roleSelected,
+        idUser: userSelected,
+      })
       clearInputs();
       if (!request?.error) {
         getData();
@@ -63,7 +95,10 @@ const UserRoleCatalog = () => {
 
   const handleClickUpdate = async () => {
     try {
-      const request = putRolesServices(roleSelected, {name: roleName})
+      const request = putRoleUsersServices(roleUserSelected, {
+        idRole: roleSelected,
+        idUser: userSelected,
+      })
       clearInputs();
       if (!request?.error) {
         getData();
@@ -85,11 +120,12 @@ const UserRoleCatalog = () => {
     }
   }
 
-  const handleClickRole = async (id) => {
+  const handleClickRoleUser = async (id) => {
     try {
-      const searchRole = dataRole.find(role => role.idRole === id);
-      setRoleSelected(id)
-      setRoleName(searchRole.name)
+      const searchRole = dataRoleUser.find(role => role.idRoleUser === id);
+      setRoleUserSelected(id)
+      setRoleSelected(searchRole.idRole)
+      setUserSelected(searchRole.idUser)
     } catch (error) {
       console.log(error)
     }
@@ -103,7 +139,7 @@ const UserRoleCatalog = () => {
         icon: "question"
       }).then(({isConfirmed}) => {
         if (isConfirmed) {
-          const request = putRolesServices(row.idRole, {
+          const request = putRoleUsersServices(row.idRoleUser, {
             state: row.state === "Activo" ? "Inactivo" : "Activo"
           })
           if (!request?.error) {
@@ -136,11 +172,15 @@ const UserRoleCatalog = () => {
   {
     name: 'id',
     maxWidth: "100px",
-    selector: row => row.idRole,
+    selector: row => row.idRoleUser,
   },
   {
-    name: 'Nombre',
-    selector: row => row.name,
+    name: 'Usuario',
+    selector: row => row.User.name,
+  },
+  {
+    name: 'Rol',
+    selector: row => row.Role.name,
   },
   {
     name: 'Estado',
@@ -160,7 +200,7 @@ const UserRoleCatalog = () => {
           <li>
             <div
               className="btn dropdown-item"
-              onClick={() => handleClickRole(row.idRole)}
+              onClick={() => handleClickRoleUser(row.idRoleUser)}
               data-bs-toggle="modal"
               data-bs-target="#update-modal"
             >Editar</div>
@@ -197,7 +237,7 @@ const UserRoleCatalog = () => {
             responsive
             pagination
             paginationComponentOptions={paginationComponentOptions}
-            data={dataRole}
+            data={dataRoleUser}
             columns={columns}
             noDataComponent={<div className='text-center'>{"cargando..."}</div>}
             customStyles={customStyles}
@@ -222,20 +262,55 @@ const UserRoleCatalog = () => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">Crear Rol</h1>
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Asignar Rol a Usuario</h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body">
               <div className="my-1">
-                <label className="form-label fw-semibold">Nombre de rol</label>
-                <input
-                    className="form-control form-control-md rounded-pill"
-                    type="text"
-                    placeholder="Nombre de area"
-                    aria-label=".form-control-sm example"
-                    value={roleName}
-                    onChange={({ target }) => setRoleName(target.value)}
-                />
+                <label className="form-label fw-semibold">Usuario</label>
+                <select
+                    className="form-select rounded-pill"
+                    aria-label="Default select example"
+                    onChange={(e) => setUserSelected(e.target.value)}
+                >
+                    <option key={"D-0"} value={null} onClick={() => setUserSelected(null)}>
+                        <span className="dropdown-item"></span>
+                    </option>
+                    {
+                        dataUser.map((item) => (
+                            <option
+                              key={`U-${item.idUser}`}
+                              value={item.idUser}
+                              onClick={() => setUserSelected(item.idUser)}
+                            >
+                                <span className="dropdown-item">{item.name}</span>
+                            </option>
+                        ))
+                    }
+                </select>
+              </div>
+              <div className="my-1">
+                <label className="form-label fw-semibold">Rol</label>
+                <select
+                    className="form-select rounded-pill"
+                    aria-label="Default select example"
+                    onChange={(e) => setRoleSelected(e.target.value)}
+                >
+                    <option key={"R-0"} value={null} onClick={() => setRoleSelected(null)}>
+                        <span className="dropdown-item"></span>
+                    </option>
+                    {
+                        dataRole.map((item) => (
+                            <option
+                              key={`U-${item.idRole}`}
+                              value={item.idRole}
+                              onClick={() => setRoleSelected(item.idRole)}
+                            >
+                                <span className="dropdown-item">{item.name}</span>
+                            </option>
+                        ))
+                    }
+                </select>
               </div>
             </div>
             <div className="modal-footer">
@@ -253,6 +328,7 @@ const UserRoleCatalog = () => {
         </div>
       </div>
 
+      {/* UPDATE TAREA */}
       <div className="modal fade" id="update-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -262,15 +338,52 @@ const UserRoleCatalog = () => {
             </div>
             <div className="modal-body">
               <div className="my-1">
-                <label className="form-label fw-semibold">Nombre de rol</label>
-                <input
-                    className="form-control form-control-md rounded-pill"
-                    type="text"
-                    placeholder="Nombre de area"
-                    aria-label=".form-control-sm example"
-                    value={roleName}
-                    onChange={({ target }) => setRoleName(target.value)}
-                />
+                <label className="form-label fw-semibold">Usuario</label>
+                <select
+                    className="form-select rounded-pill"
+                    aria-label="Default select example"
+                    onChange={(e) => setUserSelected(e.target.value)}
+                >
+                    <option key={"D-0"} value={null} onClick={() => setUserSelected(null)}>
+                        <span className="dropdown-item"></span>
+                    </option>
+                    {
+                        dataUser.map((item) => (
+                            <option
+                              key={`U-${item.idUser}`}
+                              selected={userSelected === item.idUser}
+                              value={item.idUser}
+                              onClick={() => setUserSelected(item.idUser)}
+                            >
+                                <span className="dropdown-item">{item.name}</span>
+                            </option>
+                        ))
+                    }
+                </select>
+              </div>
+              <div className="my-1">
+                <label className="form-label fw-semibold">Rol</label>
+                <select
+                    className="form-select rounded-pill"
+                    aria-label="Default select example"
+                    onChange={(e) => setRoleSelected(e.target.value)}
+                >
+                    <option key={"R-0"} value={null} onClick={() => setRoleSelected(null)}>
+                        <span className="dropdown-item"></span>
+                    </option>
+                    {
+                        dataRole.map((item) => (
+                            <option
+                              key={`U-${item.idRole}`}
+                              selected={roleSelected === item.idRole}
+                              value={item.idRole}
+                              onClick={() => setRoleSelected(item.idRole)}
+                            >
+                                <span className="dropdown-item">{item.name}</span>
+                            </option>
+                        ))
+                    }
+                </select>
               </div>
             </div>
             <div className="modal-footer">

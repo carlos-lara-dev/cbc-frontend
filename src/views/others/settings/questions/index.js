@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import DataTable from 'react-data-table-component';
 import HeaderComponent from "../../../components/HeaderComponent"
 import MenuComponent from "../../../components/MenuComponent"
@@ -12,6 +13,7 @@ import "../tableStyle.css";
 
 const MySwal = withReactContent(Swal);
 const QuestionCatalog = () => {
+  const navigate = useNavigate()
   const [dataQuestion, setDataQuestion] = useState([])
   const [dataQuiz, setDataQuiz] = useState([])
   const [questionSelect, setQuestionSelect] = useState([])
@@ -56,25 +58,53 @@ const QuestionCatalog = () => {
     getModules();
   }, [])
 
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
+
+  const clearInputs = () => {
+    setQuestion("")
+    setQuizSelected(null)
+    setNoQuestion(0)
+  }
+
   const handleClickSave = async () => {
     try {
-      const request = await postQuestionService({
-        description: question,
-        idQuiz: quizSelected,
-        noQuestion
-      })
-
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (question !== "" && quizSelected !== null && noQuestion !== null) {
+        const request = await postQuestionService({
+          description: question,
+          idQuiz: quizSelected,
+          noQuestion
         })
+        clearInputs()
+        getData()
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -97,23 +127,32 @@ const QuestionCatalog = () => {
 
   const handleClickUpdate = async () => {
     try {
-      const request = await putQuestionService(questionSelect, {
-        description: question,
-        idQuiz: quizSelected,
-        noQuestion
-      })
-
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (question !== "" && quizSelected !== null && noQuestion !== null) {
+        const request = await putQuestionService(questionSelect, {
+          description: question,
+          idQuiz: quizSelected,
+          noQuestion
         })
+        clearInputs()
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -156,25 +195,35 @@ const QuestionCatalog = () => {
 
   const handleClickSaveAnswer = async () => {
     try {
-      const request = await postAnswerService({
-        idQuestion: question,
-        description: answer,
-        isCorrect: isCorrectAnswer,
-        value: scoreAnswer,
-        type: typeAnswer
-      })
-
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (question !== "" && answer !== "" && isCorrectAnswer !== null && scoreAnswer !== null && typeAnswer !== null) {
+        const request = await postAnswerService({
+          idQuestion: question,
+          description: answer,
+          isCorrect: isCorrectAnswer,
+          value: scoreAnswer,
+          type: typeAnswer
         })
+        clearInputs()
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -199,24 +248,34 @@ const QuestionCatalog = () => {
 
   const handleClickUpdateAnswer = async () => {
     try {
-      const request = await putAnswerService(quizSelected, {
-        description: answer,
-        isCorrect: isCorrectAnswer,
-        value: scoreAnswer,
-        type: typeAnswer
-      })
-
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (quizSelected !== null && answer !== "" && isCorrectAnswer !== null && scoreAnswer !== null && typeAnswer !== null) {
+        const request = await putAnswerService(quizSelected, {
+          description: answer,
+          isCorrect: isCorrectAnswer,
+          value: scoreAnswer,
+          type: typeAnswer
         })
+        clearInputs()
+        getData()
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }

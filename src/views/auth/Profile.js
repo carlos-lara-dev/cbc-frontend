@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import FORM from "../../assets/img/Form.png";
 import Swal from 'sweetalert2';
@@ -12,10 +12,19 @@ const MySwal = withReactContent(Swal)
 
 const Profile = () => {
   const navigate = useNavigate();
-  const userData = JSON.parse(localStorage.getItem("@user"));
+  const [userData, setUserData] = useState()
+
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+      return navigate("/login");
+    }
+    setUserData(user)
+    return null;
+  };
 
   useEffect(() => {
-    cleanLocalModuleData()
+    loader()
   }, [])
   return (
     <>
@@ -50,7 +59,7 @@ const Profile = () => {
                           type="text"
                           placeholder="Nombre Completo"
                           aria-label=".form-control-sm example"
-                          defaultValue={userData.name}
+                          defaultValue={userData?.name}
                         />
                       </div>
                       <div className="mt-2">
@@ -70,7 +79,7 @@ const Profile = () => {
                           type="text"
                           placeholder="Usuario"
                           aria-label=".form-control-sm example"
-                          defaultValue={userData.user}
+                          defaultValue={userData?.user}
                         />
                       </div>
                     </div>

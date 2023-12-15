@@ -2,7 +2,7 @@ import axios from "axios"
 // https://backendcbc-5dd5b425d6bf.herokuapp.com
 export const getGeneralDataInscriptionService = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/quiz/v1/general/pie")
+    const data = await axios.get("http://localhost:5000/quiz/v1/general/pie")
     return data
   } catch (error) {
     return 0
@@ -11,7 +11,7 @@ export const getGeneralDataInscriptionService = async () => {
 
 export const getGeneralDataByDivision = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/quiz/v1/general/results/division")
+    const data = await axios.get("http://localhost:5000/quiz/v1/general/results/division")
     return data
   } catch (error) {
     console.log(error)
@@ -20,7 +20,7 @@ export const getGeneralDataByDivision = async () => {
 
 export const getGeneralDataByArea = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/quiz/v1/general/results/division/area")
+    const data = await axios.get("http://localhost:5000/quiz/v1/general/results/division/area")
     return data
   } catch (error) {
     console.log(error)
@@ -29,7 +29,7 @@ export const getGeneralDataByArea = async () => {
 
 export const getUsersByArea = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/quiz/v1/general/users/area")
+    const data = await axios.get("http://localhost:5000/quiz/v1/general/users/area")
     return data
   } catch (error) {
     console.log(error)
@@ -38,7 +38,7 @@ export const getUsersByArea = async () => {
 
 export const getDataByArea = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/quiz/v1/general/results/area")
+    const data = await axios.get("http://localhost:5000/quiz/v1/general/results/area")
     return data
   } catch (error) {
     console.log(error)
@@ -47,7 +47,7 @@ export const getDataByArea = async () => {
 
 export const getDataGeneralAdvances = async () => {
   try {
-    const data = await axios.get("http://localhost:4500/quiz/v1/general/advence/users")
+    const data = await axios.get("http://localhost:5000/quiz/v1/general/advence/users")
     return data
   } catch (error) {
     console.log(error)
@@ -56,7 +56,7 @@ export const getDataGeneralAdvances = async () => {
 
 export const getDataGeneralAdvancesByArea = async (area) => {
   try {
-    const data = await axios.post("http://localhost:4500/quiz/v1/general/advence/users/area", {area})
+    const data = await axios.post("http://localhost:5000/quiz/v1/general/advence/users/area", {area})
     return data
   } catch (error) {
     console.log(error)
@@ -65,7 +65,7 @@ export const getDataGeneralAdvancesByArea = async (area) => {
 
 export const getDataCenterDivisionAreaAgency = async (id) => {
   try {
-    const data = await axios.get(`http://localhost:4500/quiz/v1/center/results/division/${id}/area`)
+    const data = await axios.get(`http://localhost:5000/quiz/v1/center/results/division/${id}/area`)
     return data
   } catch (error) {
     console.log(error)
@@ -75,7 +75,7 @@ export const getDataCenterDivisionAreaAgency = async (id) => {
 
 export const getDataResultsByAreaName = async (area) => {
   try {
-    const data = await axios.post("http://localhost:4500/quiz/v1/center/results/area/name", {area})
+    const data = await axios.post("http://localhost:5000/quiz/v1/center/results/area/name", {area})
     return data
   } catch (error) {
     console.log(error)

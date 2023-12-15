@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import DataTable from 'react-data-table-component';
 import HeaderComponent from "../../../components/HeaderComponent"
 import MenuComponent from "../../../components/MenuComponent"
@@ -12,6 +13,7 @@ import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal);
 
 const ModuleCatalog = () => {
+  const navigate = useNavigate ()
   const [dataModule, setDataModule] = useState([])
   const [nameModule, setNameModule] = useState("")
   const [descriptionModule, setDescriptionModule] = useState("")
@@ -38,6 +40,18 @@ const ModuleCatalog = () => {
     getData();
   }, [])
 
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
+  }, [])
+
   const clearInputs = () => {
     setNameModule("")
     setDescriptionModule("")
@@ -47,26 +61,35 @@ const ModuleCatalog = () => {
 
   const handleClickSave = async () => {
     try {
-      let fileName = nameModule.replace(/\s+/g, '_')
-      const request = await postQuizService({
-        name: nameModule,
-        description: descriptionModule,
-        durationTime,
-        image: `/assets/${fileName}/${imageModule.name}`,
-        attempts: attemptsModule
-      });
-      if (!request?.error) {
+      if (nameModule !== "" && descriptionModule !== "" && durationTime > 0 && imageModule !== "" && attemptsModule > 0) {
+        const request = await postQuizService({
+          name: nameModule,
+          description: descriptionModule,
+          durationTime,
+          image: imageModule,
+          attempts: attemptsModule
+        });
         clearInputs();
         getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
-        })
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -90,25 +113,35 @@ const ModuleCatalog = () => {
 
   const handleClickUpdate = () => {
     try {
-      const request = putQuizService(moduleSelected, {
-        title: nameModule,
-        description: descriptionModule,
-        durationTime,
-        attempts: attemptsModule
-      })
-
-      clearInputs();
-      if (!request?.error) {
-        getData();
-        return MySwal.fire({
-          title: 'Excelente',
-          text: 'El registro fue creado exitosamente',
-          icon: 'success'
+      if (nameModule !== "" && descriptionModule !== "" && durationTime > 0 && imageModule !== "" && attemptsModule > 0) {
+        const request = putQuizService(moduleSelected, {
+          title: nameModule,
+          description: descriptionModule,
+          durationTime,
+          description: imageModule,
+          attempts: attemptsModule
         })
+        clearInputs();
+        getData();
+        if (!request?.error) {
+          getData();
+          return MySwal.fire({
+            title: 'Excelente',
+            text: 'El registro fue creado exitosamente',
+            icon: 'success'
+          })
+        } else {
+          getData();
+          return MySwal.fire({
+            title: 'Atención',
+            text: 'No se pudo crear el registro',
+            icon: 'info'
+          })
+        }
       } else {
         return MySwal.fire({
           title: 'Atención',
-          text: 'No se pudo crear el registro',
+          text: 'Debes ingresar todos los datos',
           icon: 'info'
         })
       }
@@ -290,10 +323,10 @@ const ModuleCatalog = () => {
                 <label className="form-label fw-semibold">Imagen</label>
                 <input
                     className="form-control form-control-md rounded-pill"
-                    type="file"
-                    placeholder="Nombre de area"
+                    type="text"
+                    placeholder="Ruta imagen"
                     aria-label=".form-control-sm example"
-                    onChange={({target}) => setImageModule(target.files[0])}
+                    onChange={({target}) => setImageModule(target.value)}
                 />
               </div>
               <div className="my-1">
@@ -369,10 +402,10 @@ const ModuleCatalog = () => {
                 <label className="form-label fw-semibold">Imagen</label>
                 <input
                     className="form-control form-control-md rounded-pill"
-                    type="file"
-                    placeholder="Nombre de area"
+                    type="text"
+                    placeholder="Ruta imagen"
                     aria-label=".form-control-sm example"
-                    onChange={({target}) => setImageModule(target.files[0])}
+                    onChange={({target}) => setImageModule(target.value)}
                 />
               </div>
               <div className="my-1">

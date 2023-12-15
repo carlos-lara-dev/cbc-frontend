@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Chart from 'react-apexcharts'
 import DataTable from 'react-data-table-component';
 import HeaderComponent from '../../../components/HeaderComponent';
@@ -13,6 +13,7 @@ import { getAgencyByAreaNameService, getDivisionService } from '../../../service
 const MySwal = withReactContent(Swal);
 const TableDetail = () => {
   const location = useLocation();
+  const navigate = useNavigate()
   const {area_name} = location.state;
   const [agencySelect, setAgencySelect] = useState("all")
   const [divisionSelect, setDivisionSelect] = useState(null)
@@ -96,7 +97,7 @@ console.log("CHART ---->", dataChart);
                           <div className='card-body'>
                             <div className='text-center'>
                               <h6><span className='fw-bold'>{quiz.Quiz.title}</span></h6>
-                              <h5>{(quiz?.UserScoreQuiz?.score * 10) || 80}</h5>
+                              <h5>{(quiz?.UserScoreQuiz?.score) || 80} pts</h5>
                             </div>
                           </div>
                         </div>
@@ -122,6 +123,18 @@ console.log("CHART ---->", dataChart);
 
   useEffect(() => {
     getData()
+  }, [])
+
+  const loader = async () => {
+    const user = JSON.parse(localStorage.getItem("@user"))
+    if (!user) {
+        return navigate("/login");
+    }
+    return null;
+  };
+
+  useEffect(() => {
+      loader()
   }, [])
 
   const handleClickAgency = (agency) => {
