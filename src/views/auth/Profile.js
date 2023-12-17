@@ -70,6 +70,7 @@ const Profile = () => {
                           pattern="[0-9]"
                           placeholder="DPI"
                           aria-label=".form-control-sm example"
+                          defaultValue={userData?.dpi}
                         />
                       </div>
                       <div className="mt-2">

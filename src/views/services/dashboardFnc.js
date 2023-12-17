@@ -1,5 +1,5 @@
 import axios from "axios"
-// https://backendcbc-5dd5b425d6bf.herokuapp.com
+// https://backendcbc-5dd5b425d6bf.herokuapp-.com
 export const getGeneralDataInscriptionService = async () => {
   try {
     const data = await axios.get("https://backendcbc-5dd5b425d6bf.herokuapp.com/quiz/v1/general/pie")

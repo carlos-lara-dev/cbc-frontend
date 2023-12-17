@@ -1,5 +1,5 @@
-import { Fragment } from "react";
-import { BrowserRouter, Route, Routes, redirect } from "react-router-dom";
+import { Fragment, useEffect } from "react";
+import { BrowserRouter, Route, Routes, redirect, useNavigate } from "react-router-dom";
 
 import Login from "./views/auth/Login";
 import Profile from "./views/auth/Profile";
@@ -26,9 +26,10 @@ import './App.css';
 
 function App() {
   // Rutas públicas (que no requieren autenticación)
+
   const PublicRoutes = () => (
     <Fragment>
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={JSON.parse(localStorage.getItem("@user")) ? (<Home />) : (<Login />)} />
       <Route path="/login" element={<Login />} />
     </Fragment>
   );

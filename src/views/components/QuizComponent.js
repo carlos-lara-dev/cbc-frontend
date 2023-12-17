@@ -38,7 +38,7 @@ const QuizComponent = ({
                     quizLocalData.note >= minimNote ? (
                         <>
                             <h2>Ganaste la prueba ¡Felicidades!</h2>
-                            <h3 className='m-1'><b>Pasaste con {(quizLocalData.note * 100) / questions.length} puntos</b></h3>
+                            <h3 className='m-1'><b>Pasaste con {quizLocalData} puntos</b></h3>
                             <p><b>Pasaste a Siguiente módulo</b></p>
                         </>
                     ) : (

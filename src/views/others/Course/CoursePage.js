@@ -408,7 +408,7 @@ const CoursePage = () => {
             setMinimNote(porcentMinimal)
             setTotalProgress(Math.round((currentQuestion + 1) * percentagePerQuestion));
         }
-    }, [currentQuestion, questions.length, questionSelect]);
+    }, [currentQuestion, questions, questions.length, questionSelect]);
 
     const loader = async () => {
         const user = JSON.parse(localStorage.getItem("@user"))

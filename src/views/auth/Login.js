@@ -40,7 +40,6 @@ const Login = () => {
         try {
             setIsLoading(true)
             const login = await loginService(user, password)
-            console.log("LOGIN", login.data.userData.dataUser);
             if (!login.data?.error) {
                 localStorage.setItem("@user", JSON.stringify(login.data.userData.dataUser));
                 setIsLoading(false);
@@ -55,7 +54,6 @@ const Login = () => {
             }
         } catch (error) {
             setIsLoading(false)
-            console.log("[ ERROR LOGIN ] =>", error)
             MySwal.fire({
                 title: "¡Atención!",
                 text: "No se pudo inciar sesión",
