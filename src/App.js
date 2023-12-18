@@ -20,6 +20,7 @@ import UserCatalog from "./views/others/settings/user";
 import AgencyCatalog from "./views/others/settings/agencia";
 import RoleCatalog from "./views/others/settings/role";
 import UserRoleCatalog from "./views/others/settings/userRole";
+import AttemptsExtra from "./views/others/settings/attemptsExtra";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -56,6 +57,7 @@ function App() {
         <Route path="/settings/user" element={<UserCatalog />} />
         <Route path="/settings/role" element={<RoleCatalog />} />
         <Route path="/settings/user/role" element={<UserRoleCatalog />} />
+        <Route path="/settings/extra/attempts" element={<AttemptsExtra />} />
       </Fragment>
     )
   }

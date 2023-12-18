@@ -56,6 +56,15 @@ export const getRoleUsersServices = async () => {
   }
 }
 
+export const getExtraAnswerServices = async () => {
+  try {
+    const data = await axios.get("https://backendcbc-5dd5b425d6bf.herokuapp.com/quiz/v1/user-attempts-quiz")
+    return data
+  } catch (error) {
+    return null
+  }
+}
+
 export const postRolesServices = async (params) => {
   try {
     const data = await axios.post(`https://backendcbc-5dd5b425d6bf.herokuapp.com/settings/v1/role`, params)
@@ -113,6 +122,24 @@ export const putAreaService = async (id, params) => {
 export const postAgencyService = async (params) => {
   try {
     const data = await axios.post(`https://backendcbc-5dd5b425d6bf.herokuapp.com/settings/v1/agency`, params)
+    return data
+  } catch (error) {
+      return null
+  }
+}
+
+export const postAttemptsExtraSerivce = async (params) => {
+  try {
+    const data = await axios.post(`https://backendcbc-5dd5b425d6bf.herokuapp.com/quiz/v1/user-attempts-quiz`, params)
+    return data
+  } catch (error) {
+      return null
+  }
+}
+
+export const putAttemptsExtraSerivce = async (id, params) => {
+  try {
+    const data = await axios.put(`https://backendcbc-5dd5b425d6bf.herokuapp.com/quiz/v1/user-attempts-quiz/${id}`, params)
     return data
   } catch (error) {
       return null

@@ -210,7 +210,7 @@ const RoleCatalog = () => {
       </div>
     ),
   }
-]
+  ]
 
   const paginationComponentOptions = {
     rowsPerPageText: 'Filas por página',
