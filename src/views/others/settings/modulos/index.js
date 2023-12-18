@@ -104,6 +104,7 @@ const ModuleCatalog = () => {
       setModuleSelected(searchModule.idQuiz)
       setNameModule(searchModule.title)
       setDescriptionModule(searchModule.description)
+      setImageModule(searchModule.image)
       setDurationTime(searchModule.durationTime)
       setAttemptsModule(searchModule.attempts)
     } catch (error) {
@@ -405,6 +406,7 @@ const ModuleCatalog = () => {
                     type="text"
                     placeholder="Ruta imagen"
                     aria-label=".form-control-sm example"
+                    value={imageModule}
                     onChange={({target}) => setImageModule(target.value)}
                 />
               </div>

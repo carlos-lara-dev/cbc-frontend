@@ -236,9 +236,27 @@ export const postPresentationService = async (params) => {
   }
 }
 
+export const putPresentationService = async (id, params) => {
+  try {
+    const data = await axios.put(`https://backendcbc-5dd5b425d6bf.herokuapp.com/quiz/v1/presentation/${id}`, params)
+    return data
+  } catch (error) {
+      return null
+  }
+}
+
 export const postPresentationItemService = async (params) => {
   try {
     const data = await axios.post(`https://backendcbc-5dd5b425d6bf.herokuapp.com/quiz/v1/presentation-item`, params)
+    return data
+  } catch (error) {
+      return null
+  }
+}
+
+export const putPresentationItemService = async (id, params) => {
+  try {
+    const data = await axios.put(`https://backendcbc-5dd5b425d6bf.herokuapp.com/quiz/v1/presentation-item/${id}`, params)
     return data
   } catch (error) {
       return null
