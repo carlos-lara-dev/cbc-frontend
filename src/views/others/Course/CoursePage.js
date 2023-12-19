@@ -448,7 +448,7 @@ const CoursePage = () => {
                                                 className="btn mx-1 my-2 py-3 px-4"
                                                 onClick={() => setPresentationSelect(pres.idPresentation)}
                                             >
-                                                <b>{`Presentación ${index + 1}`}</b>
+                                                <b>{pres.name || `Presentación ${index + 1}`}</b>
                                             </div>
                                         ))
                                     }

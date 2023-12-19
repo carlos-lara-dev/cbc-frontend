@@ -13,9 +13,10 @@ import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal);
 
 const ModuleCatalog = () => {
-  const navigate = useNavigate ()
+  const navigate = useNavigate()
   const [dataModule, setDataModule] = useState([])
   const [nameModule, setNameModule] = useState("")
+  const [orderModule, setOrderModule] = useState(0)
   const [descriptionModule, setDescriptionModule] = useState("")
   const [imageModule, setImageModule] = useState("")
   const [durationTime, setDurationTime] = useState(15)
@@ -54,6 +55,7 @@ const ModuleCatalog = () => {
 
   const clearInputs = () => {
     setNameModule("")
+    setOrderModule(0)
     setDescriptionModule("")
     setDurationTime(15)
     setAttemptsModule(1)
@@ -64,6 +66,7 @@ const ModuleCatalog = () => {
       if (nameModule !== "" && descriptionModule !== "" && durationTime > 0 && imageModule !== "" && attemptsModule > 0) {
         const request = await postQuizService({
           name: nameModule,
+          order: orderModule,
           description: descriptionModule,
           durationTime,
           image: imageModule,
@@ -103,6 +106,7 @@ const ModuleCatalog = () => {
       const searchModule = dataModule.find(item => item.idQuiz === id)
       setModuleSelected(searchModule.idQuiz)
       setNameModule(searchModule.title)
+      setOrderModule(searchModule.order)
       setDescriptionModule(searchModule.description)
       setImageModule(searchModule.image)
       setDurationTime(searchModule.durationTime)
@@ -117,6 +121,7 @@ const ModuleCatalog = () => {
       if (nameModule !== "" && descriptionModule !== "" && durationTime > 0 && imageModule !== "" && attemptsModule > 0) {
         const request = putQuizService(moduleSelected, {
           title: nameModule,
+          order: orderModule,
           description: descriptionModule,
           durationTime,
           description: imageModule,
@@ -204,6 +209,10 @@ const ModuleCatalog = () => {
     {
       name: 'Nombre',
       selector: row => row.title,
+    },
+    {
+      name: 'Posición',
+      selector: row => row.order,
     },
     {
       name: 'Descripción',
@@ -310,6 +319,18 @@ const ModuleCatalog = () => {
                 />
               </div>
               <div className="my-1">
+                <label className="form-label fw-semibold">Posición</label>
+                <input
+                    className="form-control form-control-md rounded-pill"
+                    type="number"
+                    min={0}
+                    placeholder="Nombre módulo"
+                    aria-label=".form-control-sm example"
+                    value={orderModule}
+                    onChange={({ target }) => setOrderModule(target.value)}
+                />
+              </div>
+              <div className="my-1">
                 <label className="form-label fw-semibold">Descripción</label>
                 <input
                     className="form-control form-control-md rounded-pill"
@@ -386,6 +407,18 @@ const ModuleCatalog = () => {
                     aria-label=".form-control-sm example"
                     value={nameModule}
                     onChange={({ target }) => setNameModule(target.value)}
+                />
+              </div>
+              <div className="my-1">
+                <label className="form-label fw-semibold">Posición</label>
+                <input
+                    className="form-control form-control-md rounded-pill"
+                    type="number"
+                    min={0}
+                    placeholder="Nombre módulo"
+                    aria-label=".form-control-sm example"
+                    value={orderModule}
+                    onChange={({ target }) => setOrderModule(target.value)}
                 />
               </div>
               <div className="my-1">

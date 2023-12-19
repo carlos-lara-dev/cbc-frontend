@@ -19,6 +19,7 @@ const PresentationCatalog = () => {
   const [dataPresentation, setDataPresentation] = useState([])
   const [dataQuiz, setDataQuiz] = useState([])
   const [quizSelected, setQuizSelected] = useState([])
+  const [namePresentation, setNamePresentation] = useState("")
   const [presentationSelected, setPresentationSelected] = useState([])
   const [presentationSelectedItem, setPresentationSelectedItem] = useState([])
   const [position, setPosition] = useState("")
@@ -73,6 +74,7 @@ const PresentationCatalog = () => {
   const clearInputs = () => {
     setQuizSelected(null)
     setPresentationSelected(null)
+    setNamePresentation("")
     setPosition("")
     setFilePresentation(null)
     setTypePresentation(null)
@@ -80,9 +82,10 @@ const PresentationCatalog = () => {
 
   const handleClickSave = async () => {
     try {
-      if (quizSelected !== null) {
+      if (quizSelected !== null && namePresentation !== "") {
         const request = await postPresentationService({
-          idQuiz: quizSelected
+          idQuiz: quizSelected,
+          name: namePresentation
         })
         clearInputs()
         getData();
@@ -117,6 +120,7 @@ const PresentationCatalog = () => {
     try {
       const searchPresentation = dataPresentation.find(pres => pres.idPresentation === id)
       setQuizSelected(searchPresentation.idQuiz)
+      setNamePresentation(searchPresentation.name)
       setPresentationSelected(searchPresentation.idPresentation)
     } catch (error) {
       console.log("[ ERROR ] => ", error)
@@ -125,9 +129,10 @@ const PresentationCatalog = () => {
 
   const handleClickUpdate = async () => {
     try {
-      if (quizSelected !== null) {
+      if (quizSelected !== null && namePresentation !== "") {
         const request = await putPresentationService(presentationSelected, {
-          idQuiz: quizSelected
+          idQuiz: quizSelected,
+          name: namePresentation
         })
         clearInputs()
         getData();
@@ -414,6 +419,10 @@ const PresentationCatalog = () => {
     },
     {
       name: 'Nombre',
+      selector: row => row.name,
+    },
+    {
+      name: 'Módulo',
       selector: row => row?.Quiz.title,
     },
     {
@@ -496,6 +505,17 @@ const PresentationCatalog = () => {
             </div>
             <div className="modal-body">
               <div className="my-1">
+                <label className="form-label fw-semibold">Nombre</label>
+                <input
+                    className="form-control form-control-md rounded-pill"
+                    type="text"
+                    placeholder="Nombre"
+                    aria-label=".form-control-sm example"
+                    value={namePresentation}
+                    onChange={({ target }) => setNamePresentation(target.value)}
+                />
+              </div>
+              <div className="my-1">
                 <label className="form-label fw-semibold">Selecciona un módulo</label>
                 <select
                     className="form-select rounded-pill"
@@ -540,6 +560,17 @@ const PresentationCatalog = () => {
             </div>
             <div className="modal-body">
               <div className="my-1">
+                <label className="form-label fw-semibold">Nombre</label>
+                <input
+                    className="form-control form-control-md rounded-pill"
+                    type="text"
+                    placeholder="Nombre"
+                    aria-label=".form-control-sm example"
+                    value={namePresentation}
+                    onChange={({ target }) => setNamePresentation(target.value)}
+                />
+              </div>
+              <div className="my-1">
                 <label className="form-label fw-semibold">Selecciona un módulo</label>
                 <select
                     className="form-select rounded-pill"
@@ -570,7 +601,7 @@ const PresentationCatalog = () => {
                 style={{ backgroundColor: "#810000", borderColor: "#810000" }}
                 className="btn btn-primary"
                 data-bs-dismiss="modal"
-                onClick={handleClickSave}
+                onClick={handleClickUpdate}
               >
                 Crear
               </div>
