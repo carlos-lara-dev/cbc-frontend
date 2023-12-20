@@ -38,7 +38,7 @@ const Presentation = ({ files = [] }) => {
                                 style={{ justifyContent: "center" }}
                             >
                                 {
-                                    files.map(item => (
+                                    files.sort((a, b) => a.position - b.position).map(item => (
                                         item.idTypePresentation === "image" ? (
                                             <div key={`IMG-${item.idPresentationItem}`} className="precarga">
                                                 <img
